@@ -44,14 +44,27 @@ public class CURL {
         }
     }
 
+    public var cookieFile: String? {
+        didSet {
+            if let cookieFile = cookieFile {
+                curl_easy_setopt_string(handle, CURLOPT_COOKIEFILE, cookieFile)
+                curl_easy_setopt_string(handle, CURLOPT_COOKIEJAR, cookieFile)
+            }
+        }
+    }
+
     public init(
         method: String,
         url: String,
         headers: [HTTPHeader] = [],
-        verbose: Bool = false
+        verbose: Bool = false,
+        cookieFile: String? = nil,
+        followRedirection: Bool = false
     ) {
         handle = curl_easy_init()
         self.headers = headers
+        self.cookieFile = cookieFile
+        self.followRedirection = followRedirection
 
         curl_easy_setopt_string(handle, CURLOPT_URL, url)
         curl_easy_setopt_string(handle, CURLOPT_CUSTOMREQUEST, method)
@@ -59,6 +72,12 @@ public class CURL {
         curl_easy_setopt_bool(handle, CURLOPT_SSL_VERIFYHOST, verifyHost)
         curl_easy_setopt_bool(handle, CURLOPT_VERBOSE, verbose)
         curl_easy_setopt_long(handle, CURLOPT_NOSIGNAL, 1)
+        curl_easy_setopt_long(handle, CURLOPT_FOLLOWLOCATION, followRedirection ? 1 : 0)
+
+        if let cookieFile = cookieFile {
+            curl_easy_setopt_string(handle, CURLOPT_COOKIEFILE, cookieFile)
+            curl_easy_setopt_string(handle, CURLOPT_COOKIEJAR, cookieFile)
+        }
 
         curl_easy_setopt_write_func(handle, CURLOPT_WRITEFUNCTION, curl_write_callback_fn)
         curl_easy_setopt_write_func(handle, CURLOPT_HEADERFUNCTION, curl_write_callback_fn)
