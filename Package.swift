@@ -1,11 +1,11 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 6.0
 
 import PackageDescription
 
 let package = Package(
     name: "curl-swift",
     platforms: [
-        .macOS(.v10_10)
+        .macOS(.v10_15)
     ],
     products: [
         .library(
