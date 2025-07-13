@@ -21,6 +21,7 @@ let package = Package(
             providers: [
                 .brew(["curl"]),
                 .apt(["libcurl4-openssl-dev"]),
+                .yum(["libcurl-devel"])
             ]
         ),
         .target(
